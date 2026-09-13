@@ -153,32 +153,42 @@ def checker [IsAlgClosed K] : ConcreteScalarChecker K where
   L := L
   hfinite := image_finite
 
-/-- Every natural below 256 is realised as the byte of some locus point. -/
-lemma cast_mem_image (n : ℕ) (hn : n < 256) :
-    (n : K) ∈ L '' polynomialLocus (rows : Fin 8 → MvPolynomial (Fin 8) K) := by
-  -- the witness: the byte, then its seven low bits
-  let v : Fin 8 → K := Fin.cases (n : K) (fun i : Fin 7 => ((n / 2 ^ (i : ℕ) % 2 : ℕ) : K))
-  have hv0 : v 0 = n := by simp [v]
-  have hvbit : ∀ i : Fin 7, v (bit i) = ((n / 2 ^ (i : ℕ) % 2 : ℕ) : K) := by
-    intro i; simp [v, bit]
-  refine ⟨v, ?_, by simp [L, hv0]⟩
+/-- The locus point for byte `n`: the byte, then its seven low bits. -/
+def byteWitness (n : ℕ) : Fin 8 → K :=
+  Fin.cases (n : K) (fun i : Fin 7 => ((n / 2 ^ (i : ℕ) % 2 : ℕ) : K))
+
+@[simp] lemma byteWitness_zero (n : ℕ) : byteWitness (K := K) n 0 = n := by
+  simp [byteWitness]
+
+lemma byteWitness_bit (n : ℕ) (i : Fin 7) :
+    byteWitness (K := K) n (bit i) = ((n / 2 ^ (i : ℕ) % 2 : ℕ) : K) := by
+  simp [byteWitness, bit]
+
+lemma byteWitness_mem (n : ℕ) (hn : n < 256) :
+    byteWitness (K := K) n ∈ polynomialLocus (rows : Fin 8 → MvPolynomial (Fin 8) K) := by
   rw [mem_locus_iff]
   intro r
   refine Fin.lastCases ?_ (fun i => ?_) r
   · rw [aeval_rows_last]
-    have hsum : ∑ i : Fin 7, (2 : K) ^ (i : ℕ) * v (bit i) = ((n % 128 : ℕ) : K) := by
+    have hsum : ∑ i : Fin 7, (2 : K) ^ (i : ℕ) * byteWitness n (bit i)
+        = ((n % 128 : ℕ) : K) := by
       rw [show (128 : ℕ) = 2 ^ 7 by norm_num, mod_two_pow_eq_sum]
       push_cast
-      exact Finset.sum_congr rfl fun i _ => by rw [hvbit]
-    rw [hsum, hv0]
+      exact Finset.sum_congr rfl fun i _ => by rw [byteWitness_bit]
+    rw [hsum, byteWitness_zero]
     have key : (n : K) = ((n % 128 : ℕ) : K) + 128 * ((n / 128 : ℕ) : K) := by
       conv_lhs => rw [← Nat.mod_add_div n 128]
       push_cast; ring
     have hdiv : n / 128 = 0 ∨ n / 128 = 1 := by omega
     rw [key]
     rcases hdiv with h | h <;> (rw [h]; push_cast; ring)
-  · rw [aeval_rows_castSucc, hvbit]
+  · rw [aeval_rows_castSucc, byteWitness_bit]
     rcases Nat.mod_two_eq_zero_or_one (n / 2 ^ (i : ℕ)) with h | h <;> simp [h]
+
+/-- Every natural below 256 is realised as the byte of some locus point. -/
+lemma cast_mem_image (n : ℕ) (hn : n < 256) :
+    (n : K) ∈ L '' polynomialLocus (rows : Fin 8 → MvPolynomial (Fin 8) K) :=
+  ⟨byteWitness n, byteWitness_mem n hn, by simp [L]⟩
 
 /-- With the casts of `0..255` distinct, the gadget checks one byte. -/
 theorem checksBytes [IsAlgClosed K] (hinj : Set.InjOn (Nat.cast : ℕ → K) (Set.Iio 256)) :

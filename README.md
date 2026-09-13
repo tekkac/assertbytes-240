@@ -23,10 +23,17 @@ onto at least 2^128 scalars.
 The bound is tight in each coordinate. It gives at least 112 allocations and at
 least 128 constraints. The record circuit uses exactly 112 and 128.
 
-`RecordInstance.lean` builds one byte of the record circuit as a checker: 7 low
-bits, 7 booleanity rows, 1 product row. It proves `ChecksBytes 1` when the
-casts of `0..255` are distinct in the field. The score is 15 by definition and
-at least 15 by the theorem.
+The record circuit is a proven instance. `RecordInstance.lean` builds one byte
+as a checker: 7 low bits, 7 booleanity rows, 1 product row. It proves
+`ChecksBytes 1` when the casts of `0..255` are distinct in the field. The score
+is 15 by definition and at least 15 by the theorem.
+
+`RecordInstance16.lean` builds all sixteen bytes: the one-byte gadget on
+sixteen disjoint variable blocks, and the packing map `∑ 256^j · x_j`. It
+proves `ChecksBytes 16` when the casts of `0..2^128 − 1` are distinct, which
+holds over the closure of a prime field with `p ≥ 2^128`
+(`checksBytes16_of_charP`). The score is 240 by definition and at least 240 by
+`sixteen_bytes_score_lower_bound`.
 
 The proof has no `sorry` and uses only the three standard Lean axioms.
 `AxiomAudit.lean` checks this with `#guard_msgs` on `#print axioms`, so the
@@ -120,6 +127,7 @@ against.
 |---|---|
 | `AssertBytes240/Optimality.lean` | the public statements, including the 240 bound |
 | `AssertBytes240/RecordInstance.lean` | one byte of the record circuit as a checker |
+| `AssertBytes240/RecordInstance16.lean` | the full sixteen-byte record circuit as a checker; score 240 |
 | `AssertBytes240/Components.lean` | finite projections are constant on components (step 2) |
 | `AssertBytes240/Algebra/` | the affine Bézout bound (step 1) |
 | `AssertBytes240/AxiomAudit.lean` | axiom check, run by the build |

@@ -1,12 +1,13 @@
 import AssertBytes240.Optimality
 import AssertBytes240.RecordInstance
+import AssertBytes240.RecordInstance16
 
 /-!
 # Public axiom audit
 
 These guarded commands cover the affine component theorem, the
 finite-projection theorem, the parametric AssertBytes score theorem, and the
-record-gadget instance that shows the hypotheses are satisfiable.
+one-byte and sixteen-byte record instances.
 -/
 
 /--
@@ -32,3 +33,15 @@ info: 'ZkGolfOptimality.RecordInstance.bound_applies' depends on axioms: [propex
 -/
 #guard_msgs in
 #print axioms ZkGolfOptimality.RecordInstance.bound_applies
+
+/--
+info: 'ZkGolfOptimality.RecordInstance16.bound_applies16' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms ZkGolfOptimality.RecordInstance16.bound_applies16
+
+/--
+info: 'ZkGolfOptimality.RecordInstance16.checksBytes16_of_charP' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms ZkGolfOptimality.RecordInstance16.checksBytes16_of_charP

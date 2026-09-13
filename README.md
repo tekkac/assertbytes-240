@@ -27,6 +27,13 @@ The bound is tight in each coordinate, not only in the total: it gives at least
 112 allocations and at least 128 constraints, and a verified 240 circuit
 achieves exactly 112 and 128.
 
+The hypotheses are satisfiable, and the record's per-byte gadget is a proven
+instance. `RecordInstance.lean` builds it as a checker in the model, seven
+witnessed low bits with seven booleanity rows and one product row, and proves
+`ChecksBytes 1` for it whenever the casts of `0..255` are distinct in the field.
+Its score is 15 by definition and at least 15 by the theorem, so the bound is
+attained, in Lean, with no paper step.
+
 No `sorry`, and no axioms beyond the three Lean itself uses. The check is part
 of the build: `AxiomAudit.lean` wraps `#print axioms` in `#guard_msgs`, so a
 green build is the axiom audit.
@@ -131,6 +138,7 @@ against.
 | Path | What |
 |---|---|
 | `AssertBytes240/Optimality.lean` | the four public statements, including the 240 bound |
+| `AssertBytes240/RecordInstance.lean` | the record's per-byte gadget as a checker; the bound is attained |
 | `AssertBytes240/Components.lean` | components to distinguishable scalars (step 2) |
 | `AssertBytes240/Algebra/` | the affine Bézout bound (step 1) |
 | `AssertBytes240/AxiomAudit.lean` | build-enforced axiom check |

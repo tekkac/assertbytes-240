@@ -98,10 +98,9 @@ end ConcreteScalarChecker
 
 /-- A checker whose finite scalar image represents at least `B` independent bytes.
 
-A lower bound, not an equality: every proof below uses only `≤`, and an
-instance over a prime field can transfer no more than `≤` to the algebraic
-closure, because its accepted points inject into the closure's but need not
-exhaust them. -/
+A lower bound, not an equality. The proofs only use `≤`. An instance over a
+prime field only gives `≤` over the closure, since its accepted points inject
+into the closure's points. -/
 def ChecksBytes {K : Type*} [Field K] [IsAlgClosed K]
     (B : ℕ) (X : ConcreteScalarChecker K) : Prop :=
   X.publicVars = B ∧ 2 ^ (8 * B) ≤ X.acceptedScalarCard

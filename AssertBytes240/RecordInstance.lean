@@ -7,10 +7,9 @@ One byte of David Wong's 240-point circuit, as a `ConcreteScalarChecker`:
 seven witnessed low bits, seven booleanity rows, and one product row pinning
 the byte to the recomposition or the recomposition plus 128.
 
-This is the positive control for the whole development. It shows the
-hypotheses of `score_lower_bound` are satisfiable, so the theorem is not
-vacuous, and it shows the record's per-byte gadget lies inside the class the
-theorem covers: every witness is pinned by its own row, in every field.
+This shows the hypotheses of `score_lower_bound` are satisfiable, and that the
+record's per-byte gadget is covered by the theorem. Every witness is fixed to a
+finite set by its own row, in every field.
 -/
 
 noncomputable section

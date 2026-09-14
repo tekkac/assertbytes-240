@@ -87,12 +87,18 @@ components.
   infinite. This circuit costs more than 240 and does not beat the bound. It
   shows the hypothesis cannot be dropped.
 
-- **The link to Clean is not formalised.**
+- **The link to Clean is not included here.**
   [Clean](https://github.com/Verified-zkEVM/clean) formalises circuits,
-  semantics, soundness, completeness, cost, and the R1CS check. Nothing here
-  translates a Clean circuit into a `ConcreteScalarChecker`. A general
-  translation cannot exist, by the example above. It must assume soundness over
-  the closure. Whether an `F_p`-specific circuit scores below 240 is open.
+  semantics, soundness, completeness, cost, and the R1CS check. A bridge from
+  David Wong's submitted circuit to `rows16` exists and is machine-checked, but
+  it lives outside this repo: it needs Clean, and Clean cannot share a module
+  with full Mathlib because both declare `Fin.foldl_eq_foldl_finRange`. The
+  bridge proves that the submitted circuit's flat constraints hold exactly when
+  the assignment lies in the `rows16` locus, and that its counted cost is
+  `checker16`'s. It adds one axiom, the contest's assumption that the field
+  order is prime. This repo stays mathlib-only. A general translation from
+  arbitrary contest circuits cannot exist, by the example above. Whether an
+  `F_p`-specific circuit scores below 240 is open.
 
 ## Build
 

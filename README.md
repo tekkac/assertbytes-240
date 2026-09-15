@@ -2,7 +2,10 @@
 
 A Lean 4 proof that the zkGolf AssertBytes record score of 240 is optimal, for
 every R1CS circuit whose constraint system is sound over the algebraic closure
-of the field. Every standard circuit satisfies this condition.
+of the field. Every standard byte-check circuit satisfies this condition,
+because bit decomposition pins values with booleanity rows and those have the
+same two roots in every field. Circuits that rely on an equation having no
+solution in the specific field, such as residuosity checks, do not.
 
 ## The theorem
 
